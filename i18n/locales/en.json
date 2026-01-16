@@ -1,0 +1,87 @@
+{
+    "dashboard": {
+        "kpis": {
+            "total_wealth": "Total Wealth (AUM)",
+            "annual_return": "Annual Return",
+            "liquidity_ratio": "Liquidity Ratio"
+        },
+        "benchmark": "Benchmark",
+        "target": "Target",
+        "evolution": "Wealth Evolution",
+        "allocation": "Asset Allocation",
+        "total": "Total",
+        "recent_alerts": "Recent Alerts & Notifications",
+        "view_all": "View All"
+    },
+    "menu": {
+        "dashboard": "Global Dashboard",
+        "real_estate": "Real Estate",
+        "portfolio": "Investment Portfolio",
+        "treasury": "Treasury",
+        "private_equity": "Private Equity",
+        "environmental": "Carbon Rights",
+        "family_business": "Family Business",
+        "risk_management": "Risk Management",
+        "passion_assets": "Passion Assets",
+        "philanthropy": "Philanthropy & Impact"
+    },
+    "philanthropy_section": {
+        "title": "Legacy & Philanthropy",
+        "total_donated": "Total Donated (YTD)",
+        "budget_used": "Budget Utilized",
+        "projects_active": "Active Projects",
+        "beneficiaries": "Direct Beneficiaries",
+        "ods_alignment": "SDG Alignment (UN)",
+        "foundation_name": "Nexus Family Foundation",
+        "education": "Education",
+        "health": "Global Health",
+        "culture": "Culture & Art",
+        "environment_pr": "Environment"
+    },
+    "passion_section": {
+        "title": "Passion Investments",
+        "collection_value": "Collection Value",
+        "appreciation": "Appreciation",
+        "items": "Items",
+        "vintage_cars": "Classic Cars",
+        "art": "Contemporary Art",
+        "watches": "High-End Watches",
+        "wine": "Fine Wines",
+        "kf_index": "Knight Frank Luxury Index"
+    },
+    "risk_section": {
+        "radar_title": "Risk Radar",
+        "market": "Market",
+        "liquidity": "Liquidity",
+        "credit": "Credit",
+        "geopolitical": "Geopolitical",
+        "climate": "Climate",
+        "stress_test": "Stress Test (Simulator)",
+        "scenario_crash": "Market Crash (-20%)",
+        "scenario_rates": "Rate Hike (+2%)",
+        "impact_est": "Est. Impact",
+        "liquidity_gap": "Liquidity Gap",
+        "geo_concentration": "Geo Concentration"
+    },
+    "business_section": {
+        "revenue": "Revenue",
+        "ebitda": "EBITDA",
+        "net_margin": "Net Margin",
+        "valuation": "Valuation (Enterprise Value)",
+        "employees": "Employees",
+        "growth": "YoY Growth",
+        "sector": "Sector"
+    },
+    "real_estate_section": {
+        "total_value": "Total Portfolio Value",
+        "avg_yield": "Avg Yield",
+        "occupancy": "Global Occupancy",
+        "view_gallery": "Gallery",
+        "view_list": "List",
+        "filter_all": "All",
+        "filter_occupied": "Occupied",
+        "filter_construction": "Construction",
+        "income": "Income",
+        "expenses": "Expenses"
+    }
+}

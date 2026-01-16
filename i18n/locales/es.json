@@ -1,0 +1,115 @@
+{
+    "dashboard": {
+        "kpis": {
+            "total_wealth": "Patrimonio Total (AUM)",
+            "annual_return": "Rentabilidad Anual",
+            "liquidity_ratio": "Ratio de Liquidez"
+        },
+        "benchmark": "Benchmark",
+        "target": "Objetivo",
+        "evolution": "Evolución Patrimonial",
+        "allocation": "Asset Allocation",
+        "total": "Total",
+        "recent_alerts": "Alertas y Notificaciones Recientes",
+        "view_all": "Ver todas"
+    },
+    "menu": {
+        "dashboard": "Dashboard Global",
+        "real_estate": "Inmobiliario",
+        "portfolio": "Cartera de Valores",
+        "treasury": "Tesorería",
+        "private_equity": "Capital Riesgo",
+        "environmental": "Derechos CO₂",
+        "family_business": "Negocio Familiar",
+        "risk_management": "Gestión de Riesgos",
+        "passion_assets": "Activos de Pasión",
+        "philanthropy": "Filantropía e Impacto",
+        "crypto": "Criptoactivos",
+        "reporting": "Reporting"
+    },
+    "philanthropy_section": {
+        "title": "Legado y Filantropía",
+        "total_donated": "Total Donado (YTD)",
+        "budget_used": "Presupuesto Ejecutado",
+        "projects_active": "Proyectos Activos",
+        "beneficiaries": "Beneficiarios Directos",
+        "ods_alignment": "Alineación ODS (UN SDGs)",
+        "foundation_name": "Fundación Familia Nexus",
+        "education": "Educación",
+        "health": "Salud Global",
+        "culture": "Cultura y Arte",
+        "environment_pr": "Medio Ambiente"
+    },
+    "passion_section": {
+        "title": "Inversiones de Pasión",
+        "collection_value": "Valor Colección",
+        "appreciation": "Revalorización",
+        "items": "Piezas",
+        "vintage_cars": "Coches Clásicos",
+        "art": "Arte Contemporáneo",
+        "watches": "Relojes Alta Gama",
+        "wine": "Vinos Exclusivos",
+        "kf_index": "Knight Frank Luxury Index"
+    },
+    "risk_section": {
+        "radar_title": "Radar de Riesgos",
+        "market": "Mercado",
+        "liquidity": "Liquidez",
+        "credit": "Crédito",
+        "geopolitical": "Geopolítico",
+        "climate": "Climático",
+        "stress_test": "Test de Estrés (Simulador)",
+        "scenario_crash": "Crash de Mercado (-20%)",
+        "scenario_rates": "Subida Tipos (+2%)",
+        "impact_est": "Impacto Estimado",
+        "liquidity_gap": "Brecha de Liquidez",
+        "geo_concentration": "Conc. Geográfica"
+    },
+    "business_section": {
+        "revenue": "Ingresos",
+        "ebitda": "EBITDA",
+        "net_margin": "Margen Neto",
+        "valuation": "Valoración (Enterprise Value)",
+        "employees": "Empleados",
+        "growth": "Crecimiento YoY",
+        "sector": "Sector"
+    },
+    "real_estate_section": {
+        "total_value": "Valor Total Cartera",
+        "avg_yield": "Yield Medio",
+        "occupancy": "Ocupación Global",
+        "view_gallery": "Galería",
+        "view_list": "Lista",
+        "filter_all": "Todos",
+        "filter_occupied": "Alquilado",
+        "filter_construction": "En Obra",
+        "income": "Ingresos",
+        "expenses": "Gastos"
+    },
+    "treasury_section": {
+        "title": "Tesorería y Liquidez",
+        "total_liquidity": "Liquidez Total",
+        "cash_flow": "Flujo de Caja (Neto)",
+        "currency_breakdown": "Desglose por Divisas",
+        "income": "Entradas",
+        "expenses": "Salidas"
+    },
+    "environmental_section": {
+        "title": "Derechos de Emisión (CO₂)",
+        "spot_price": "Cotización Spot",
+        "volume": "Volumen Gestionado",
+        "buy_price": "Precio Medio Compra",
+        "sell_price": "Precio Medio Venta",
+        "margin": "Margen Realizado",
+        "order_book": "Libro de Órdenes",
+        "spread_chart": "Evolución de Spread"
+    },
+    "reporting_section": {
+        "configure": "Configuración del Informe",
+        "select_modules": "Seleccionar Módulos",
+        "history": "Historial de Informes",
+        "download": "Descargar",
+        "generating": "Generando PDF...",
+        "generate_new": "Imprimir Informe PDF"
+    }
+}

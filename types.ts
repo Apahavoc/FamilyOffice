@@ -1,4 +1,5 @@
 import React from 'react';
+import { LucideIcon } from 'lucide-react';
 
 export enum TabView {
   DASHBOARD = 'DASHBOARD',
@@ -15,9 +16,18 @@ export interface KPI {
   icon: React.ReactNode;
 }
 
+export interface KPICardProps {
+  title: string;
+  value: string;
+  subtext: string;
+  icon: React.ReactNode;
+  trend?: string;
+}
+
 export interface AssetData {
   name: string;
   value: number;
+  [key: string]: any;
 }
 
 export interface PerformanceData {
@@ -35,4 +45,26 @@ export interface RealEstateAsset {
   occupancy: number;
   location: string;
   image?: string;
+}
+
+export interface PortfolioHolding {
+  ticker: string;
+  name: string;
+  type: 'ETF' | 'Equity' | 'Fund' | 'Bond' | 'Crypto';
+  value: string;
+  change: string;
+}
+
+export interface TooltipPayload {
+  name: string;
+  value: number;
+  color: string;
+  payload: any;
+  dataKey: string;
+}
+
+export interface CustomTooltipProps {
+  active?: boolean;
+  payload?: TooltipPayload[];
+  label?: string;
 }
