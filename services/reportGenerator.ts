@@ -1704,3 +1704,299 @@ export const generateLiquidityReport = async () => {
         alert("Error generando el informe de liquidez.");
     }
 };
+// --- ENHANCED USER MANUAL GENERATOR ---
+
+// Helper for Manual Sections
+const addManualSection = (
+    doc: jsPDF,
+    title: string,
+    intro: string,
+    features: { name: string; desc: string; usage?: string }[],
+    kpis: { name: string; formula: string; meaning: string }[],
+    pageNum: number
+) => {
+    doc.addPage();
+    addPremiumHeader(doc, `Módulo: ${title}`);
+    let y = 40;
+
+    // 1. Concept / Intro
+    doc.setFontSize(14);
+    doc.setTextColor(PREMIUM_COLORS.navy[0], PREMIUM_COLORS.navy[1], PREMIUM_COLORS.navy[2]);
+    doc.setFont('helvetica', 'bold');
+    doc.text("Propósito y Estrategia", 14, y);
+    y += 8;
+
+    doc.setFontSize(10);
+    doc.setTextColor(50);
+    doc.setFont('helvetica', 'normal');
+    doc.text(doc.splitTextToSize(intro, 180), 14, y);
+    y += 25;
+
+    // 2. Interface Guide
+    doc.setFontSize(14);
+    doc.setTextColor(PREMIUM_COLORS.navy[0], PREMIUM_COLORS.navy[1], PREMIUM_COLORS.navy[2]);
+    doc.setFont('helvetica', 'bold');
+    doc.text("Guía de Interfaz & Uso", 14, y);
+    y += 10;
+
+    features.forEach(feat => {
+        // Feature Box
+        doc.setFillColor(248, 250, 252);
+        doc.roundedRect(14, y, 182, 28, 2, 2, 'F');
+        doc.setDrawColor(226, 232, 240);
+        doc.roundedRect(14, y, 182, 28, 2, 2, 'D');
+
+        // Title
+        doc.setFontSize(11);
+        doc.setTextColor(PREMIUM_COLORS.chart[0][0], PREMIUM_COLORS.chart[0][1], PREMIUM_COLORS.chart[0][2]); // Blue
+        doc.setFont('helvetica', 'bold');
+        doc.text(feat.name, 18, y + 8);
+
+        // Desc
+        doc.setFontSize(9);
+        doc.setTextColor(60);
+        doc.setFont('helvetica', 'normal');
+        doc.text(doc.splitTextToSize(feat.desc, 170), 18, y + 16);
+
+        // Usage Tip (if exists)
+        if (feat.usage) {
+            doc.setFontSize(8);
+            doc.setTextColor(PREMIUM_COLORS.gold[0], PREMIUM_COLORS.gold[1], PREMIUM_COLORS.gold[2]);
+            doc.setFont('helvetica', 'italic');
+            doc.text(`Tip: ${feat.usage}`, 18, y + 24);
+        }
+
+        y += 32;
+
+        // Overflow Check
+        if (y > 250) {
+            addPremiumFooter(doc, pageNum);
+            doc.addPage();
+            addPremiumHeader(doc, `Módulo: ${title} (Cont.)`);
+            y = 40;
+        }
+    });
+
+    // 3. Technical KPIs
+    y += 5;
+    if (y > 230) {
+        addPremiumFooter(doc, pageNum);
+        doc.addPage();
+        addPremiumHeader(doc, `Módulo: ${title} (KPIs)`);
+        y = 40;
+    }
+
+    doc.setFontSize(14);
+    doc.setTextColor(PREMIUM_COLORS.navy[0], PREMIUM_COLORS.navy[1], PREMIUM_COLORS.navy[2]);
+    doc.setFont('helvetica', 'bold');
+    doc.text("Métricas Clave (KPIs)", 14, y);
+    y += 10;
+
+    kpis.forEach(kpi => {
+        doc.setFontSize(10);
+        doc.setTextColor(PREMIUM_COLORS.slate[0], PREMIUM_COLORS.slate[1], PREMIUM_COLORS.slate[2]);
+        doc.setFont('helvetica', 'bold');
+        doc.text(kpi.name, 14, y);
+
+        // Formula in monospace
+        doc.setFont('courier', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(100);
+        doc.text(kpi.formula, 80, y);
+
+        y += 5;
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(60);
+        doc.text(doc.splitTextToSize(kpi.meaning, 180), 14, y);
+
+        y += 12; // Spacing
+    });
+
+    addPremiumFooter(doc, pageNum);
+    return pageNum + 1; // Return next page number
+};
+
+export const generateUserManual = () => {
+    const doc = new jsPDF();
+    let pageNum = 1;
+
+    // 1. Cover
+    addPremiumCover(doc, "Manual de Operaciones & Glosario");
+
+    // 2. Introduction
+    doc.addPage();
+    addPremiumHeader(doc, "Introducción al Sistema");
+    let y = 40;
+
+    doc.setFontSize(18);
+    doc.setTextColor(PREMIUM_COLORS.navy[0], PREMIUM_COLORS.navy[1], PREMIUM_COLORS.navy[2]);
+    doc.setFont('helvetica', 'bold');
+    doc.text("Filosofía 'Ariete' en Gestión Patrimonial", 14, y);
+    y += 15;
+
+    const philosophy = "Este sistema no es un simple visor de cuentas. Es una herramienta diseñada para la gestión proactiva. Permite detectar riesgos ocultos, simular escenarios de estrés ('Black Swans') y optimizar cada euro ocioso. Nuestra filosofía se basa en tres pilares:\n\n1. Visibilidad Total: Eliminar silos de información entre bancos y gestores.\n2. Acción Inmediata: Herramientas para ejecutar decisiones (rebalanceos, coberturas) en tiempo real.\n3. Estrategia a Largo Plazo: Planificación generacional y de impacto.";
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(50);
+    doc.text(doc.splitTextToSize(philosophy, 180), 14, y);
+
+    addPremiumFooter(doc, pageNum++);
+
+
+    // 3. MODULE DEEP DIVES
+
+    // A. DASHBOARD
+    pageNum = addManualSection(
+        doc,
+        "Dashboard Principal",
+        "El centro de mando para el CEO/Family Officer. Aquí se responde en 5 segundos a la pregunta: '¿Cómo estamos hoy?'. Prioriza las alertas críticas sobre los datos estáticos.",
+        [
+            { name: "Semáforo del Comité", desc: "Indicador de estado general. Verde (Normal), Amarillo (Atención: Liquidez/Desviación), Rojo (Crítico: Pérdida >10%).", usage: "Si está en Rojo, haga clic para ver el desglose del riesgo activo." },
+            { name: "Top Movers", desc: "Lista de los 3 activos que más han afectado al NAV este mes, tanto positiva como negativamente.", usage: "Úselo para identificar rápidamente la fuente de volatilidad mensual." },
+            { name: "Resumen de Liquidez", desc: "Muestra el efectivo disponible inmediatamente para cubrir Capital Calls.", usage: "Mantenga siempre un colchón del 10% del NAV." }
+        ],
+        [
+            { name: "NAV Total", formula: "Σ (Activos) - Σ (Pasivos)", meaning: "Valor neto de liquidación del patrimonio familiar." },
+            { name: "YTD Change", formula: "((NAV Hoy / NAV 1-Ene) - 1) * 100", meaning: "Crecimiento orgánico del capital en lo que va de año." }
+        ],
+        pageNum
+    );
+
+    // B. PORTFOLIO
+    pageNum = addManualSection(
+        doc,
+        "Portfolio (Mercados Públicos)",
+        "Gestión de activos cotizados (Renta Variable, Renta Fija, ETFs). El objetivo es mantener la asignación estratégica definida por el comité de inversión.",
+        [
+            { name: "AI Rebalancing Bot", desc: "Algoritmo que detecta desviaciones (Drift). Si la RV sube mucho, sugiere vender para comprar RF y mantener el equilibrio.", usage: "Haga clic en 'Ejecutar Rebalanceo' para generar las órdenes de venta/compra sugeridas." },
+            { name: "Selector de Custodios", desc: "Filtro para ver posiciones por banco depositario (ej. UBS vs JP Morgan).", usage: "Útil para comparar comisiones y rendimiento entre bancos." },
+            { name: "Análisis de Rentabilidad", desc: "Gráfico de evolución vs S&P 500.", usage: "Active el 'Benchmark' para ver si estamos batiendo al mercado." }
+        ],
+        [
+            { name: "Portfolio Drift", formula: "|Alloc Actual - Alloc Objetivo|", meaning: "Distancia porcentual frente a la estrategia ideal. >5% requiere acción." },
+            { name: "Weighted Yield", formula: "Σ (Yield Activo * Peso Activo)", meaning: "Rentabilidad por dividendo/cupón esperada de la cartera." }
+        ],
+        pageNum
+    );
+
+    // C. PRIVATE EQUITY
+    pageNum = addManualSection(
+        doc,
+        "Private Equity & Venture Capital",
+        "Inversiones en empresas no cotizadas. Requiere gestión de compromisos de capital y seguimiento de valoraciones trimestrales.",
+        [
+            { name: "Simulador Waterfall", desc: "Herramienta visual para entender cuánto dinero recibimos en una venta (Exit) tras pagar al gestor (Carry).", usage: "Ajuste el 'Exit Valuation' para ver cómo cambia su retorno neto." },
+            { name: "Control de Capital Calls", desc: "Calendario de desembolsos pendientes.", usage: "Revise esta sección mensualmente para asegurar liquidez en Tesorería." },
+            { name: "Gráfico Curva J", desc: "Visualización del ciclo de vida del fondo.", usage: "Identifique fondos en fase de 'Harvest' (cosecha) vs 'Investment' (inversión)." }
+        ],
+        [
+            { name: "TVPI (MOIC)", formula: "(Valor Actual + Distribuciones) / Capital Llamado", meaning: "Múltiplo total. 1.5x significa que el valor es 1.5 veces lo invertido." },
+            { name: "DPI", formula: "Distribuciones / Capital Llamado", meaning: "Dinero efectivo recuperado. >1.0x significa 'Risk Free' (capital recuperado)." },
+            { name: "Unfunded Commitment", formula: "Compromiso Total - Capital Llamado", meaning: "Pasivo latente. Dinero que el fondo puede pedirnos en cualquier momento." }
+        ],
+        pageNum
+    );
+
+    // D. REAL ESTATE
+    pageNum = addManualSection(
+        doc,
+        "Real Estate (Inmobiliario)",
+        "Gestión de propiedades físicas. Combina rentas recurrentes con potencial de apreciación de capital mediante reformas.",
+        [
+            { name: "CapEx Value-Add Planner", desc: "Calculadora para proyectar el retorno de una reforma.", usage: "Introduzca coste de obra y nueva renta esperada para ver el nuevo Yield." },
+            { name: "Mapa de Activos", desc: "Vista geográfica de propiedades.", usage: "Filtre por 'Comercial' vs 'Residencial' para ver concentración." },
+            { name: "Hold vs Sell", desc: "Análisis de coste de oportunidad.", usage: "¿Vender hoy y reinvertir al 5% o mantener el alquiler actual?" }
+        ],
+        [
+            { name: "Yield on Cost", formula: "Renta Neta Anual / (Precio Compra + Reformas)", meaning: "Rentabilidad real sobre el dinero total invertido." },
+            { name: "Loan to Value (LTV)", formula: "Deuda Hipotecaria / Valor Tasación", meaning: "Nivel de apalancamiento. >60% se considera riesgo alto." }
+        ],
+        pageNum
+    );
+
+    // E. TREASURY
+    pageNum = addManualSection(
+        doc,
+        "Tesorería & Cash Management",
+        "Gestión del efectivo y equivalentes. El objetivo no es maximizar el retorno, sino garantizar la solvencia y minimizar el coste de oportunidad del dinero parado.",
+        [
+            { name: "Smart Cash Sweeper", desc: "Escáner de cuentas corrientes. Detecta saldos ociosos >100k€ que no rinden intereses.", usage: "Mueva el excedente a Fondos Monetarios (T-Bills) con un clic." },
+            { name: "Planificador Fiscal", desc: "Calendario de pagos de impuestos.", usage: "Reserve liquidez para el pago de IS/IRPF en Julio." }
+        ],
+        [
+            { name: "Cash Runway", formula: "Liquidez Total / Gasto Mensual Medio", meaning: "Meses de vida operativa sin necesidad de vender activos ilíquidos." }
+        ],
+        pageNum
+    );
+
+    // F. LIFESTYLE
+    pageNum = addManualSection(
+        doc,
+        "Lifestyle & Passion Assets",
+        "Gestión de activos de disfrute personal (Arte, Coches, Relojes). Aunque son emocionales, representan una parte importante del patrimonio.",
+        [
+            { name: "Galería Visual", desc: "Inventario digital de piezas con fotos y documentación.", usage: "Use para seguros o planificación sucesoria." },
+            { name: "Rastreador de Mercado", desc: "Conecta con índices de precios (ej. Chrono24, ArtPrice) para valorar la colección.", usage: "Actualice anualmente para ver plusvalías latentes." }
+        ],
+        [
+            { name: "Price Appreciation", formula: "Valor Mercado Actual - Precio Compra", meaning: "Plusvalía latente (no realizada) de la colección." }
+        ],
+        pageNum
+    );
+
+    // 4. GLOSSARY (Comprehensive)
+    doc.addPage();
+    addPremiumHeader(doc, "Glosario Financiero Maestro");
+    y = 40;
+
+    const indicators = [
+        { name: "Alpha", def: "Rentabilidad extra conseguida por el gestor por encima del mercado. Es la medida de la habilidad ('skill') del gestor." },
+        { name: "Beta", def: "Sensibilidad de un activo al mercado. Beta 1.5 significa que si el mercado sube un 10%, el activo sube un 15% (y viceversa). Mide riesgo sistemático." },
+        { name: "Catch-up", def: "Cláusula en Private Equity. Tras devolver el capital y el retorno preferente al inversor, el gestor recibe el 100% de los beneficios siguientes hasta igualar su cuota de Carried Interest (normalmente 20%)." },
+        { name: "Clawback", def: "Protección para el inversor. Si el gestor cobró comisiones de éxito excesivas en años anteriores y luego el fondo pierde dinero, debe devolverlas." },
+        { name: "Correlation", def: "Medida estadística de cómo se mueven dos activos juntos. +1 (se mueven igual), -1 (se mueven opuestos), 0 (sin relación). Buscamos correlación baja para diversificar." },
+        { name: "Distressed", def: "Estrategia de inversión en empresas o activos en bancarrota o con graves problemas, comprándolos con gran descuento para reestructurarlos." },
+        { name: "Dry Powder", def: "Capital disponible (no invertido) que tienen los fondos de Private Equity listos para hacer compras ('disparar')." },
+        { name: "Duration", def: "En Renta Fija, sensibilidad del precio del bono a los cambios en tipos de interés. A mayor duración, mayor riesgo si suben los tipos." },
+        { name: "Hurdle Rate", def: "Rentabilidad mínima (ej. 8%) que debe conseguir el fondo para el inversor antes de que el gestor empiece a cobrar su comisión de éxito (Carry)." },
+        { name: "High Water Mark", def: "En Hedge Funds, nivel máximo de valor alcanzado. El gestor no cobra comisión de éxito hasta superar este pico histórico (no cobra por recuperar pérdidas)." },
+        { name: "J-Curve", def: "Gráfico de flujo de caja neto en Private Equity. Tiene forma de 'J' porque al principio hay salidas (inversión + fees) y al final entradas (ventas)." },
+        { name: "Leverage (Apalancamiento)", def: "Uso de deuda para aumentar el tamaño de una inversión. Amplifica tanto las ganancias como las pérdidas." },
+        { name: "Liquidity Premium", def: "Rentabilidad extra que exige un inversor por bloquear su dinero en un activo ilíquido (como PE o Real Estate) durante años." },
+        { name: "Mezzanine Debt", def: "Deuda subordinada (riesgo intermedio entre deuda senior y equity). Paga un interés alto y a veces tiene derechos de conversión en acciones." },
+        { name: "Secondaries", def: "Mercado de compra-venta de participaciones en fondos de Private Equity ya existentes. Permite entrar en fondos maduros y evitar la parte negativa de la Curva J." },
+        { name: "Sharpe Ratio", def: "Rentabilidad / Volatilidad. El 'Santo Grial' de la eficiencia. ¿Merece la pena el riesgo que estoy corriendo?" },
+        { name: "Vintage Year", def: "Año en que un fondo de Private Equity realiza su primera inversión. Importante para comparar fondos (ej. Vintage 2008 fue difícil, Vintage 2010 fue excelente)." },
+        { name: "Yield on Cost", def: "Rentabilidad actual dividida por el coste original. Para inversores a largo plazo, muestra el retorno real sobre su capital inicial, ignorando la subida de precio de mercado." }
+    ];
+
+    indicators.forEach((ind, i) => {
+        if (y > 270) {
+            addPremiumFooter(doc, pageNum++); // Rough page calc
+            doc.addPage();
+            addPremiumHeader(doc, "Glosario Financiero (Cont.)");
+            y = 40;
+        }
+
+        // Glossary Item
+        doc.setFontSize(11);
+        doc.setTextColor(PREMIUM_COLORS.chart[0][0], PREMIUM_COLORS.chart[0][1], PREMIUM_COLORS.chart[0][2]);
+        doc.setFont('helvetica', 'bold');
+        doc.text(ind.name, 14, y);
+
+        doc.setFontSize(9);
+        doc.setTextColor(60);
+        doc.setFont('helvetica', 'normal');
+        doc.text(doc.splitTextToSize(ind.def, 180), 14, y + 5);
+
+        y += 20;
+    });
+
+    addPremiumFooter(doc, pageNum);
+
+    // Save
+    triggerDownload(doc, "Nexus_Manual_Operaciones_PRO.pdf");
+};

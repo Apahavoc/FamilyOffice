@@ -163,6 +163,50 @@ export const Environmental: React.FC = () => {
                     </div>
                 </ZenChartWrapper>
             </div>
+            {/* SDG IMPACT MAP */}
+            <div className="bg-slate-800/50 backdrop-blur-md border border-slate-700 rounded-2xl p-6">
+                <h3 className="text-lg font-bold text-slate-200 mb-6 flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5 text-emerald-500" />
+                    Impacto SDG (Naciones Unidas)
+                </h3>
+                <div className="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-9 gap-4">
+                    {/* MOCK SDG GOALS */}
+                    {[
+                        { id: 1, label: "No Poverty", color: "bg-rose-500", match: false },
+                        { id: 2, label: "Zero Hunger", color: "bg-amber-500", match: false },
+                        { id: 3, label: "Good Health", color: "bg-emerald-500", match: true, project: "MediCare Groups" },
+                        { id: 4, label: "Quality Education", color: "bg-red-500", match: false },
+                        { id: 5, label: "Gender Equality", color: "bg-orange-500", match: false },
+                        { id: 6, label: "Clean Water", color: "bg-cyan-500", match: true, project: "EcoLogistics Water" },
+                        { id: 7, label: "Clean Energy", color: "bg-yellow-500", match: true, project: "SolarSpain 2" },
+                        { id: 8, label: "Decent Work", color: "bg-red-700", match: true, project: "Portofolio Jobs" },
+                        { id: 9, label: "Industry & Infra", color: "bg-orange-600", match: true, project: "EcoLogistics" },
+                        { id: 10, label: "Reduced Inequality", color: "bg-pink-500", match: false },
+                        { id: 11, label: "Sustainable Cities", color: "bg-orange-400", match: true, project: "Real Estate Green" },
+                        { id: 12, label: "Responsible Cons.", color: "bg-yellow-600", match: false },
+                        { id: 13, label: "Climate Action", color: "bg-emerald-700", match: true, project: "Carbon Credits" },
+                        { id: 14, label: "Life Below Water", color: "bg-blue-500", match: false },
+                        { id: 15, label: "Life on Land", color: "bg-green-500", match: true, project: "Reforestación Galicia" },
+                        { id: 16, label: "Peace & Justice", color: "bg-blue-700", match: false },
+                        { id: 17, label: "Partnerships", color: "bg-indigo-900", match: false },
+                    ].map(sdg => (
+                        <div key={sdg.id} className={cn(
+                            "relative aspect-square rounded-xl p-3 flex flex-col justify-between transition-all group cursor-pointer border border-transparent",
+                            sdg.match ? `${sdg.color} shadow-lg shadow-black/20 hover:scale-105` : "bg-slate-800 opacity-40 grayscale hover:opacity-60"
+                        )}>
+                            <span className="text-xl font-bold text-white/90">{sdg.id}</span>
+                            <span className="text-[10px] font-bold text-white leading-tight">{sdg.label}</span>
+
+                            {sdg.match && (
+                                <div className="absolute inset-0 bg-slate-900/90 rounded-xl p-3 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-center items-center text-center">
+                                    <p className="text-[10px] text-slate-400 uppercase mb-1">Impacto vía</p>
+                                    <p className="text-xs font-bold text-white">{sdg.project}</p>
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 };

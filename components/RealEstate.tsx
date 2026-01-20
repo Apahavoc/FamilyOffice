@@ -6,7 +6,9 @@ import {
   List as ListIcon,
   Filter,
   TrendingUp,
-  DollarSign
+  DollarSign,
+  Hammer,
+  ArrowRight
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useRealEstateData } from '../hooks/useRealEstateData';
@@ -15,12 +17,106 @@ import { cn } from '../lib/utils';
 import { RealEstateAsset } from '../types';
 import { HoldVsSellCalculator } from './tools/HoldVsSellCalculator';
 
+// CapEx Simulator Component (Internal for speed)
+const RenovationSimulator: React.FC<{ asset: RealEstateAsset; onClose: () => void }> = ({ asset, onClose }) => {
+  const [budget, setBudget] = useState(50000);
+  const [rentIncrease, setRentIncrease] = useState(15); // %
+
+  // Simple ROI Logic
+  const currentVal = parseFloat(asset.value.replace(/[^0-9.]/g, '')) * 1000000;
+  const currentYield = parseFloat(asset.yield);
+  const currentAnnualRent = currentVal * (currentYield / 100);
+
+  const newAnnualRent = currentAnnualRent * (1 + rentIncrease / 100);
+  const totalCost = currentVal + budget;
+  const newYieldOnCost = (newAnnualRent / totalCost) * 100;
+  const valuationUplift = (newAnnualRent / (currentYield / 100)) - currentVal - budget;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+      <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
+        <div className="p-6 bg-slate-800 border-b border-slate-700 flex justify-between items-center">
+          <h3 className="text-xl font-bold text-white flex items-center gap-2">
+            <Hammer className="w-5 h-5 text-amber-500" />
+            Plan de Reforma: {asset.name}
+          </h3>
+          <button onClick={onClose} className="text-slate-400 hover:text-white">✕</button>
+        </div>
+
+        <div className="p-6 space-y-6">
+          {/* Inputs */}
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm text-slate-400 mb-1">Presupuesto Reforma (€)</label>
+              <input
+                type="range" min="10000" max="500000" step="5000"
+                value={budget} onChange={e => setBudget(Number(e.target.value))}
+                className="w-full accent-amber-500"
+              />
+              <div className="flex justify-between text-xs text-slate-500 font-mono mt-1">
+                <span>10k</span>
+                <span className="text-amber-400 font-bold text-base">{budget.toLocaleString()} €</span>
+                <span>500k</span>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm text-slate-400 mb-1">Subida Alquiler Estimada (%)</label>
+              <input
+                type="range" min="0" max="50" step="1"
+                value={rentIncrease} onChange={e => setRentIncrease(Number(e.target.value))}
+                className="w-full accent-emerald-500"
+              />
+              <div className="flex justify-between text-xs text-slate-500 font-mono mt-1">
+                <span>0%</span>
+                <span className="text-emerald-400 font-bold text-base">+{rentIncrease}%</span>
+                <span>50%</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Results Box */}
+          <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700 space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-slate-400">Yield Original vs Nuevo</span>
+              <div className="flex items-center gap-2">
+                <span className="text-slate-500 line-through">{currentYield.toFixed(1)}%</span>
+                <ArrowRight className="w-3 h-3 text-slate-500" />
+                <span className="text-emerald-400 font-bold text-lg">{newYieldOnCost.toFixed(2)}%</span>
+              </div>
+            </div>
+            <div className="h-px bg-slate-700/50"></div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-slate-400">Plusvalía Latente (Post-Obras)</span>
+              <span className="text-amber-400 font-bold font-mono">+{Math.round(valuationUplift).toLocaleString()} €</span>
+            </div>
+            <p className="text-[10px] text-slate-500 italic mt-2 text-center">
+              *Calculado asumiendo misma tasa de capitalización (Cap Rate) de mercado.
+            </p>
+          </div>
+        </div>
+
+        <div className="p-4 bg-slate-800 border-t border-slate-700 flex justify-end gap-3">
+          <button onClick={onClose} className="px-4 py-2 hover:bg-slate-700 rounded-lg text-sm text-slate-300 transition-colors">Cancelar</button>
+          <button onClick={() => alert("Proyecto guardado en Pipeline de Inversiones")} className="px-4 py-2 bg-amber-600 hover:bg-amber-500 rounded-lg text-sm font-bold text-white shadow-lg transition-transform hover:scale-105">
+            Aprobar Proyecto Capex
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const RealEstate: React.FC = () => {
   const { t } = useTranslation();
   const { assets, metrics } = useRealEstateData();
   const [viewMode, setViewMode] = useState<'gallery' | 'list'>('gallery');
   const [filter, setFilter] = useState<'all' | 'occupied' | 'construction'>('all');
   const [selectedAsset, setSelectedAsset] = useState<RealEstateAsset | null>(null);
+
+  // Controls for Modals
+  const [showHoldSell, setShowHoldSell] = useState(false);
+  const [showRenovation, setShowRenovation] = useState(false);
 
   const filteredAssets = assets.filter(asset => {
     if (filter === 'all') return true;
@@ -153,13 +249,22 @@ export const RealEstate: React.FC = () => {
                   <div className="h-full bg-red-500/50" style={{ width: '25%' }}></div>
                 </div>
 
-                <button
-                  onClick={() => setSelectedAsset(asset)}
-                  className="w-full mt-4 bg-slate-700/50 hover:bg-slate-700 text-slate-300 hover:text-white py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-colors flex items-center justify-center gap-2"
-                >
-                  <TrendingUp className="w-3 h-3" />
-                  Analizar Hold vs Sell
-                </button>
+                <div className="flex gap-2 mt-4">
+                  <button
+                    onClick={() => { setSelectedAsset(asset); setShowHoldSell(true); }}
+                    className="flex-1 bg-slate-700/50 hover:bg-slate-700 text-slate-300 hover:text-white py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1"
+                  >
+                    <TrendingUp className="w-3 h-3" />
+                    Hold/Sell
+                  </button>
+                  <button
+                    onClick={() => { setSelectedAsset(asset); setShowRenovation(true); }}
+                    className="flex-1 bg-slate-700/50 hover:bg-slate-700 text-slate-300 hover:text-white py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1"
+                  >
+                    <Hammer className="w-3 h-3" />
+                    CapEx
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -197,11 +302,20 @@ export const RealEstate: React.FC = () => {
           </table>
         </div>
       )}
-      {selectedAsset && (
+
+      {/* MODALS */}
+      {selectedAsset && showHoldSell && (
         <HoldVsSellCalculator
-          isOpen={!!selectedAsset}
-          onClose={() => setSelectedAsset(null)}
+          isOpen={true}
+          onClose={() => { setShowHoldSell(false); setSelectedAsset(null); }}
           asset={selectedAsset}
+        />
+      )}
+
+      {selectedAsset && showRenovation && (
+        <RenovationSimulator
+          asset={selectedAsset}
+          onClose={() => { setShowRenovation(false); setSelectedAsset(null); }}
         />
       )}
     </div>

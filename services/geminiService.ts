@@ -75,15 +75,44 @@ export const generateReportAnalysis = async (dynamicContext: any = {}) => {
         const result = await aiModel.generateContent(prompt);
         const responseText = result.response.text();
 
-        // CLEANER: Strip markdown code blocks if present (common issue with Gemini)
-        const cleanText = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
+        console.log("Full Gemini Response:", responseText); // Full log for debugging
 
-        console.log("Raw AI Response:", cleanText.substring(0, 100) + "..."); // Debug log
+        // 1. Extract JSON block using Regex (Robust against markdown descriptions)
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) {
+            console.error("No JSON found in response");
+            throw new Error("Invalid AI Response Format: No JSON block found");
+        }
 
-        return JSON.parse(cleanText);
+        let cleanText = jsonMatch[0];
+
+        // 2. Sanitize common JSON errors
+        // Remove markdown remnants inside the block if any
+        cleanText = cleanText.replace(/```json/g, '').replace(/```/g, '');
+
+        try {
+            return JSON.parse(cleanText);
+        } catch (parseError) {
+            console.error("JSON Parse Error on:", cleanText);
+            // Attempt simple cleanup of trailing commas (simple case)
+            cleanText = cleanText.replace(/,\s*}/g, '}').replace(/,\s*]/g, ']');
+            return JSON.parse(cleanText);
+        }
+
     } catch (error) {
         console.error("Gemini Report Gen Error:", error);
-        throw error;
+        // Fallback Object to prevent "Content Unavailable" blank sections
+        return {
+            executiveSummary: "Error: No se pudo generar el análisis. Detalle: " + (error as any).message,
+            macroAnalysis: "El análisis macroeconómico no se pudo generar correctamente. Por favor intente de nuevo.",
+            strategyNotes: "Notas de estrategia no disponibles.",
+            sectorFocus: "",
+            geoStrategy: "",
+            portfolioPerformance: "Datos no disponibles.",
+            riskAnalysis: "",
+            cashFlowAnalysis: "",
+            philanthropySpotlight: ""
+        };
     }
 };
 
